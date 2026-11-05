@@ -1,0 +1,170 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "The anchored gadget [M, 2M+6] is infeasible: Erdős #197 (partial result)"
+  description: >-
+    Proves that for every M ≥ 8 no linear order of the interval [M, 2M + 6] without monotone
+    3-term arithmetic progressions puts 2(M + j) − a before M + j for all j ≤ 3 and a ≤ 1. As a
+    consequence, a set S ⊆ ℕ that has an enumeration with no monotone 3-term arithmetic
+    progression and contains two consecutive integers v, v + 1 contains only finitely many
+    intervals [P, 2P − v + 6]. This sharpens the window 2P − v + 13 that follows from the theorem
+    of trureturing PR #9626 (Kasel's order gadget OG(M) is infeasible for all M ≥ 16), and the
+    constant 6 is optimal for the gadget statement as stated (M ≥ 8). It is partial progress
+    on Erdős Problem #197, which asks whether ℕ can be partitioned into two such sets; that
+    question remains open.
+  authors:
+    - "Alex Lopez"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Alex Lopez"
+
+classification:
+  arxiv: ["math.CO", "math.NT"]
+  msc2020: ["11B25", "05D10", "05A05"]
+
+sources:
+  - title: "Theorem I and Corollary I: the anchored gadget [M, 2M+6] is infeasible (docs/proof.md in this repository)"
+    type: original-proof
+    relationship: other
+    note: >-
+      The theorem and proof first presented here. The hand proof was found with Claude Fable 5.1
+      (Anthropic) and checked by three adversarial AI referees. Its Lemma I is the four-flood
+      cycle of trureturing PR #9626; Lemma II and the window constant 6 (optimal for Theorem I as
+      stated, M ≥ 8) are new.
+  - title: "Erdős Problem #197"
+    authors:
+      - "Thomas F. Bloom"
+    contributors:
+      - name: "Paul Erdős"
+        role: "problem-proposer"
+      - name: "Ronald Graham"
+        role: "problem-proposer"
+    id: "https://www.erdosproblems.com/197"
+    type: "web page"
+    relationship: background
+  - title: "On permutations containing no long arithmetic progressions"
+    authors:
+      - "J. A. Davis"
+      - "R. C. Entringer"
+      - "R. L. Graham"
+      - "G. J. Simmons"
+    type: "article"
+    location: "Acta Arithmetica 34 (1977), 81–90"
+    relationship: background
+    note: "Shows that every enumeration of ℕ contains a monotone 3-term arithmetic progression."
+  - title: "Structural rigidity in the Erdős–Graham two-set permutation problem"
+    authors:
+      - "William Kasel"
+    id: "arXiv:2609.02939"
+    type: "preprint"
+    relationship: background
+    note: >-
+      Source of the ladder lemmas used here (zigzag and flood, Lemmas 23–26) and of the order
+      gadget OG(M). Shows that the dyadic partition is not a solution and conjectures (Remark 30)
+      that OG(M) is infeasible for every M ≥ 16.
+
+related_formalizations:
+  - id: "https://github.com/google-deepmind/formal-conjectures/blob/5d8b04d3d41b745cc3f2f3cdd5ed04b60c500983/FormalConjectures/ErdosProblems/197.lean"
+    relationship: other
+    note: >-
+      Statement of Erdős #197 (Erdos197.erdos_197). The no-monotone-AP hypothesis of
+      Erdos197Interval.main_result is formal-conjectures' ¬HasMonotoneAP (Subtype.val ∘ f) 3 with
+      the definitions unfolded, since Challenge.lean may import only Mathlib.
+  - id: "https://github.com/the-omega-institute/trureturing/pull/9626"
+    relationship: other
+    note: >-
+      Lean proof that Kasel's order gadget OG(M) is infeasible for all M ≥ 16, i.e. the anchored
+      gadget on the longer window [M', 2M' + 13] with M' = M − 14. Theorem I implies OG(M) for
+      M ≥ 22; it does not follow by restricting OG(M) or its four-guard lemma (the four guards
+      alone are satisfiable on [M, 2M + 6] at M = 13, 14). No code was taken from it.
+  - id: "https://github.com/Alex-lop/erdos-197-bounded-lag"
+    relationship: other
+    note: >-
+      An earlier, independent partial result on Erdős #197 from the same project (no two-set
+      solution with eventual lag ratio below 2). It uses the same encoding of the formal-conjectures
+      predicate.
+
+status:
+  scope: >-
+    Fully formalizes Theorem I (Erdos197Interval.gadget) and Corollary I
+    (Erdos197Interval.main_result) of docs/proof.md. It does not resolve Erdős #197. Not
+    formalized: the SAT evidence of docs/proof.md Section 6 for its conjecture that the window
+    [M, 2M + 5] is feasible for infinitely many M (the instance M = 8, which shows that the
+    constant 6 is optimal for Theorem I as stated, is checked in Lean in checks/nonvacuity.lean,
+    outside the formalization), the remarks after Corollary I (the affine version and the dyadic
+    partition), and the comparison with earlier work in Section 7.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["Claude Fable 5.1", "Claude Opus 5.5 (claude-opus-5-5)"]
+      framework: "Claude Code"
+      tool_setup: >-
+        Claude Code agents in an unattended research run on open Erdős problems: one main session
+        plus subagents. A Claude Fable 5.1 subagent found the hand proof of Theorem I, using SAT
+        solving (CaDiCaL), a symbolic rule prover and numeric checkers written in Python and C.
+        Three adversarial referee subagents checked the proof under separate lenses (proof,
+        computation, scope), each with its own code. A Claude Opus 5.5 subagent wrote the Lean
+        proof, iterating with the Lean compiler (mostly omega), and packaged this repository.
+      cost:
+        wall_time: "about one hour for the Lean formalization and packaging (2026-11-04); the hand proof and its refereeing took a few hours earlier the same day"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: >-
+        The user asked Claude to attack open Erdős problems, formalize what it proves and package
+        the results. No full solution of #197 was found; this repository packages a partial
+        result. The formalization was done unattended from a written brief.
+  spend_usd: "subscription-based"
+  notes: >-
+    The mathematics was produced by Claude Fable 5.1 and the Lean code and write-up by Claude
+    Opus 5.5 (Anthropic), under the direction of Alex Lopez. The Lean kernel checks both theorems.
+
+fidelity:
+  divergences: >-
+    The write-up speaks of linear orders of [M, 2M + 6]; the Lean statement encodes a linear order
+    by an injective ranking σ : ℕ → ℕ (x comes before y iff σ x < σ y), which is equivalent for a
+    finite set. The write-up's ℕ and Lean's ℕ = {0, 1, 2, …} (as in formal-conjectures) give the
+    same statements, and the proof does not use positivity. In Corollary I, 2 * P + 6 - v is
+    truncated subtraction, equal to 2P − v + 6 for every P ≥ v. No other divergences known.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    The statements in Challenge.lean and Solution.lean were checked to elaborate to identical
+    terms (pp.all), and #print axioms reports only propext, Classical.choice and Quot.sound for
+    both. In checks/fidelity.lean, Corollary I is restated with verbatim copies of
+    formal-conjectures' HasMonotoneAP, List.IsAPOfLength and List.IsAPOfLengthWith and proved from
+    Erdos197Interval.main_result by exact. That file and checks/nonvacuity.lean show that the
+    hypotheses are not vacuous: an explicit order of [8, 21] satisfies the hypotheses of Theorem I
+    for the window 2M + 5 with every anchor constraint that lies in it, and the powers of two
+    satisfy the hypotheses of Corollary I with v = 1. The informal proof survived three adversarial
+    AI referees; it has not been refereed by a human.
+
+alignment:
+  namespace: "Erdos197Interval"
+  statements:
+    - source: "docs/proof.md, Theorem I"
+      lean: "Erdos197Interval.gadget"
+      module: "Challenge"
+      status: "proved"
+      note: >-
+        A linear order of [M, 2M + 6] is an injective ranking σ on Set.Icc M (2 * M + 6); "no
+        monotone 3-term AP" says that for x < y < z in the interval with y − x = z − y, σ y is not
+        strictly between σ x and σ z; the anchor constraints are σ (2 * (M + j) - a) < σ (M + j)
+        for j ≤ 3, a ≤ 1.
+    - source: "docs/proof.md, Corollary I"
+      lean: "Erdos197Interval.main_result"
+      module: "Challenge"
+      status: "proved"
+      note: >-
+        An enumeration of S is f : ℕ ≃ S; "no monotone 3-term AP" is formal-conjectures'
+        ¬HasMonotoneAP (Subtype.val ∘ f) 3 unfolded; the conclusion is
+        ∃ P₀, ∀ P ≥ P₀, ¬ Set.Icc P (2 * P + 6 - v) ⊆ S.
+
+acknowledgements: "Lean 4 and Mathlib; the formal-conjectures project for the statement of Erdős #197; W. Kasel for the ladder lemmas and the order gadget; the trureturing project (PR #9626) for the Lean proof of Kasel's gadget conjecture; the Palomar template for the repository layout."
